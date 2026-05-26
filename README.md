@@ -2,17 +2,29 @@
 
 完整流程：**启动容器** → 下载源码 → 打 Patch → 编译 Kernel → 编译 ALOS → 生成 Android Image
 
+> 所有脚本均为 **Linux bash 脚本**，需在 Linux 环境（或 Docker 容器）下运行。
+
+---
+
+## 获取脚本
+
+```bash
+git clone https://github.com/johnysh/alos-bkc.git
+cd alos-bkc
+chmod +x *.sh
+```
+
 ---
 
 ## 环境说明
 
-所有编译步骤默认在 **Docker 容器** 内运行，默认路径：
+编译步骤默认在 **Docker 容器** 内运行，默认路径：
 
-| 变量 | 默认路径 | 说明 |
-|------|----------|------|
-| ALOS 源码 | `/root/alos` | Android 源码树 |
-| Kernel 源码 | `/root/kernel` | Android GKI kernel (6.18) |
-| alos-grub | `/data/alos-grub` | GRUB patches + kernel patches 仓库 |
+| 路径 | 说明 |
+|------|------|
+| `/root/alos` | Android 源码树 |
+| `/root/kernel` | Android GKI kernel (6.18) |
+| `/data/alos-grub` | GRUB patches + kernel patches 仓库 |
 
 如需使用自定义路径，通过脚本参数指定（见各步骤说明）。
 
@@ -20,10 +32,10 @@
 
 ## Step 0：启动 Docker 容器
 
-在**宿主机**上运行：
+在**宿主机（Linux）** 上运行：
 
 ```bash
-bash /data/script/run_container.sh
+./run_container.sh
 ```
 
 脚本提供交互式菜单：
@@ -84,14 +96,14 @@ ssh root@10.67.116.199 -p 6000
 ### Step 1：下载 ALOS 源码
 
 ```bash
-bash /data/script/sync_alos_ww13p.sh
+./sync_alos_ww13p.sh
 ```
 
 运行后会提示输入 Artifactory 账号（Intel IDSID）和密码。
 
 **自定义路径：**
 ```bash
-bash /data/script/sync_alos_ww13p.sh --dir /data/alos
+./sync_alos_ww13p.sh --dir /data/alos
 ```
 
 **参数说明：**
@@ -105,12 +117,12 @@ bash /data/script/sync_alos_ww13p.sh --dir /data/alos
 ### Step 2：下载 Kernel 源码
 
 ```bash
-bash /data/script/sync_kernel_ww13p.sh
+./sync_kernel_ww13p.sh
 ```
 
 **自定义路径：**
 ```bash
-bash /data/script/sync_kernel_ww13p.sh --dir /data/kernel
+./sync_kernel_ww13p.sh --dir /data/kernel
 ```
 
 **参数说明：**
@@ -125,7 +137,7 @@ bash /data/script/sync_kernel_ww13p.sh --dir /data/kernel
 ### Step 3：打 Patch（ALOS + Kernel）
 
 ```bash
-bash /data/script/deploy_patches.sh
+./deploy_patches.sh
 ```
 
 脚本会依次询问：
@@ -139,14 +151,14 @@ bash /data/script/deploy_patches.sh
 - **ALOS patches**（GRUB/ESP 启动支持）：
   ```
   cd $ANDROID_BUILD_TOP
-  ./alos_grub/deploy.sh --target=<device>
+  $ALOS_GRUB_TOP/deploy.sh --target=<device>
   → 输出到 vendor/intel/utils/aosp_diff/<device>/
   → 输出到 vendor/intel/utils/grub_prebuilts/
   ```
 
 - **Kernel patches**：
   ```
-  cd /data/alos-grub/kernel
+  cd $ALOS_GRUB_TOP/kernel
   ./patch-overlay -w <kernel_workspace> -p ./patches apply
   → 自动跳过已 apply 的 patch
   → 失败时报错退出
@@ -157,13 +169,13 @@ bash /data/script/deploy_patches.sh
 ### Step 4：编译 Kernel
 
 ```bash
-bash /data/script/build_kernel.sh
+./build_kernel.sh
 ```
 
 **自定义路径：**
 ```bash
-bash /data/script/build_kernel.sh --dir /data/kernel
-bash /data/script/build_kernel.sh -d /data/kernel -j 16
+./build_kernel.sh --dir /data/kernel
+./build_kernel.sh -d /data/kernel -j 16
 ```
 
 **参数说明：**
@@ -185,13 +197,13 @@ bash /data/script/build_kernel.sh -d /data/kernel -j 16
 ### Step 5：编译 ALOS + 打包 Image
 
 ```bash
-bash /data/script/build_alos.sh
+./build_alos.sh
 ```
 
 **自定义路径：**
 ```bash
-bash /data/script/build_alos.sh --alos-dir /data/alos --kernel-dir /data/kernel
-bash /data/script/build_alos.sh -a /data/alos -k /data/kernel -j 16
+./build_alos.sh --alos-dir /data/alos --kernel-dir /data/kernel
+./build_alos.sh -a /data/alos -k /data/kernel -j 16
 ```
 
 **参数说明：**
@@ -228,17 +240,17 @@ bash /data/script/build_alos.sh -a /data/alos -k /data/kernel -j 16
 
 ```bash
 # 1. 下载源码（需要 Artifactory 账号）
-bash /data/script/sync_alos_ww13p.sh
-bash /data/script/sync_kernel_ww13p.sh
+./sync_alos_ww13p.sh
+./sync_kernel_ww13p.sh
 
 # 2. 打 patch（交互式输入路径和 target）
-bash /data/script/deploy_patches.sh
+./deploy_patches.sh
 
 # 3. 编译 kernel
-bash /data/script/build_kernel.sh
+./build_kernel.sh
 
 # 4. 编译 ALOS + 打包
-bash /data/script/build_alos.sh
+./build_alos.sh
 ```
 
 ---
@@ -249,11 +261,11 @@ bash /data/script/build_alos.sh
 ALOS=/data/alos
 KERNEL=/data/kernel
 
-bash /data/script/sync_alos_ww13p.sh   -d ${ALOS}
-bash /data/script/sync_kernel_ww13p.sh -d ${KERNEL}
-bash /data/script/deploy_patches.sh    # 按提示输入 ${ALOS} 和 ${KERNEL}
-bash /data/script/build_kernel.sh      -d ${KERNEL}
-bash /data/script/build_alos.sh        -a ${ALOS} -k ${KERNEL}
+./sync_alos_ww13p.sh   -d ${ALOS}
+./sync_kernel_ww13p.sh -d ${KERNEL}
+./deploy_patches.sh    # 按提示输入 ${ALOS} 和 ${KERNEL}
+./build_kernel.sh      -d ${KERNEL}
+./build_alos.sh        -a ${ALOS} -k ${KERNEL}
 ```
 
 ---
