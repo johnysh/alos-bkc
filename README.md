@@ -24,7 +24,7 @@ chmod +x *.sh
 |------|------|
 | `/root/alos` | Android 源码树 |
 | `/root/kernel` | Android GKI kernel (6.18) |
-| `/data/alos-grub` | GRUB patches + kernel patches 仓库 |
+| `/root/grub` | GRUB patches + kernel patches 仓库 |
 
 如需使用自定义路径，通过脚本参数指定（见各步骤说明）。
 
