@@ -24,7 +24,7 @@ chmod +x *.sh
 |------|------|
 | `/root/alos` | Android 源码树 |
 | `/root/kernel` | Android GKI kernel (6.18) |
-| `/root/grub` | GRUB patches + kernel patches 仓库 |
+| `/root/grub` | GRUB patches + kernel patches 仓库（alos-grub）|
 
 如需使用自定义路径，通过脚本参数指定（见各步骤说明）。
 
@@ -142,7 +142,7 @@ ssh root@10.67.116.199 -p 6000
 ```
 
 脚本会依次询问：
-1. `ALOS_GRUB_TOP` — alos-grub 目录（默认 `/data/alos-grub`）
+1. `ALOS_GRUB_TOP` — alos-grub 目录（默认 `/root/grub`）
 2. `ANDROID_BUILD_TOP` — ALOS 源码目录（默认 `/root/alos`）
 3. `Kernel workspace` — Kernel 源码目录（默认 `/root/kernel`）
 4. `Target device` — 目标设备（ocelot / firefly / fatcat）

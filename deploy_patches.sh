@@ -40,8 +40,8 @@ if [[ -n "${ALOS_GRUB_DIR:-}" ]]; then
         ALOS_GRUB_DIR="${user_input}"
     fi
 else
-    read -rp "  Enter ALOS_GRUB_TOP path [/data/alos-grub]: " user_input
-    ALOS_GRUB_DIR="${user_input:-/data/alos-grub}"
+    read -rp "  Enter ALOS_GRUB_TOP path [/root/grub]: " user_input
+    ALOS_GRUB_DIR="${user_input:-/root/grub}"
 fi
 
 if [[ ! -f "${ALOS_GRUB_DIR}/deploy.sh" ]]; then
