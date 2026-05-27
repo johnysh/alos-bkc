@@ -24,16 +24,18 @@ create_container() {
     local image_name
     local container_name
     local host_port
+    local source_dir
+    local kernel_dir
+    local grub_dir
     local git_user_name
     local git_user_email
-    local netrc_dir
-    local netrc_path
 
     image_name="$(prompt_with_default "请输入镜像名" "${DEFAULT_IMAGE_NAME}")"
     container_name="$(prompt_with_default "请输入容器名称" "${DEFAULT_CONTAINER_NAME}")"
     host_port="$(prompt_with_default "请输入宿主机映射端口(映射到容器22)" "${DEFAULT_HOST_PORT}")"
     source_dir="$(prompt_with_default "请输入宿主机ALOS源代码目录(留空不映射)" "")"
     kernel_dir="$(prompt_with_default "请输入宿主机Kernel源代码目录(留空不映射)" "")"
+    grub_dir="$(prompt_with_default "请输入宿主机alos-grub目录(留空不映射)" "")"
 
     if docker ps -a --format '{{.Names}}' | grep -Fxq "${container_name}"; then
         echo "错误: 容器 ${container_name} 已存在，请更换名称或先删除旧容器。"
@@ -58,6 +60,9 @@ create_container() {
     if [[ -n "${kernel_dir}" ]] && [[ -d "${kernel_dir}" ]]; then
         cmd+=" -v \"${kernel_dir}:/root/kernel\""
     fi
+    if [[ -n "${grub_dir}" ]] && [[ -d "${grub_dir}" ]]; then
+        cmd+=" -v \"${grub_dir}:/root/grub\""
+    fi
     cmd+=" \"${image_name}\""
     eval "${cmd}" >/dev/null
 
@@ -73,6 +78,9 @@ create_container() {
 
     echo "容器创建完成: ${container_name}"
     echo "端口映射: ${host_port} -> 22"
+    [[ -n "${source_dir}" ]] && echo "ALOS 挂载 : ${source_dir} -> /root/alos"
+    [[ -n "${kernel_dir}" ]] && echo "Kernel 挂载: ${kernel_dir} -> /root/kernel"
+    [[ -n "${grub_dir}" ]]   && echo "GRUB 挂载  : ${grub_dir} -> /root/grub"
 }
 
 start_container() {

@@ -59,10 +59,11 @@ chmod +x *.sh
 | 宿主机映射端口 | `6000` | SSH 端口，映射到容器 22 |
 | 宿主机 ALOS 源码目录 | （留空） | 填写后挂载为容器内 `/root/alos` |
 | 宿主机 Kernel 源码目录 | （留空） | 填写后挂载为容器内 `/root/kernel` |
+| 宿主机 alos-grub 目录 | （留空） | 填写后挂载为容器内 `/root/grub` |
 | git user.name | | 设置容器内 git 用户名 |
 | git user.email | | 设置容器内 git 邮箱 |
 
-> **提示：** 如果宿主机已有 ALOS/Kernel 源码，填写目录后会挂载进容器，避免重复下载。
+> **提示：** 如果宿主机已有 ALOS/Kernel/alos-grub 源码，填写目录后会挂载进容器，避免重复下载。
 
 ### 选项 2：启动已有容器
 
