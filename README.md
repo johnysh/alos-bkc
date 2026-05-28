@@ -281,3 +281,57 @@ KERNEL=/data/kernel
 | `deploy_patches.sh` | 打 ALOS GRUB patches + Kernel patches |
 | `build_kernel.sh` | 编译 GKI kernel + ocelot vendor modules |
 | `build_alos.sh` | 编译 ALOS droid，替换 kernel，打包 image |
+| `scripts/ecg-1/fix_usbrelay.sh` | 修复 USB Relay udev 权限规则（ECG-1 主机运行） |
+| `scripts/ecg-1/switch_usb.sh` | 通过 USB Relay 切换 USB 供电（触发设备重启） |
+| `scripts/ecg-1/flash_image.sh` | 将 Android Image 写入 SanDisk U 盘（ECG-1 主机运行） |
+| `scripts/ecg-1/run_cts.sh` | 启动 CTS 测试（自动连接 ADB 设备） |
+
+---
+
+## ECG-1 测试机工具脚本
+
+ECG-1 测试机（`alos-ecg-1@10.239.58.154`）上的辅助脚本，位于 `scripts/ecg-1/`。
+
+### fix_usbrelay.sh — 修复 USB Relay 权限
+
+首次使用 USB Relay 前运行，添加 udev 规则使普通用户可访问：
+
+```bash
+bash scripts/ecg-1/fix_usbrelay.sh
+```
+
+### switch_usb.sh — USB 电源切换
+
+通过 USB Relay 断电再上电，用于重启连接的 USB 设备（如 U 盘）：
+
+```bash
+bash scripts/ecg-1/switch_usb.sh
+```
+
+### flash_image.sh — 刷写 Android Image
+
+将 `.bin.gz` 格式的 Android Image 写入 SanDisk Extreme Pro U 盘（VID:0781 PID:5588）：
+
+```bash
+# 使用默认 image 文件名 android-desktop_image.bin.gz
+bash scripts/ecg-1/flash_image.sh
+
+# 或指定 image 文件
+bash scripts/ecg-1/flash_image.sh /path/to/your_image.bin.gz
+```
+
+> 脚本会自动识别 SanDisk U 盘，提示确认后开始写入，写入前自动卸载已挂载分区。
+
+### run_cts.sh — 启动 CTS 测试
+
+自动连接 ADB 设备（`10.239.58.115:5555`）并启动 cts-tradefed：
+
+```bash
+# 进入交互模式
+bash scripts/ecg-1/run_cts.sh
+
+# 直接运行指定 plan
+bash scripts/ecg-1/run_cts.sh run cts -m CtsDisplayTestCases
+```
+
+> 前提：CTS 工具包已解压到 `~/sjh/android-cts/`，参考 CTS 环境搭建步骤。
