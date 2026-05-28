@@ -297,7 +297,7 @@ ECG-1 测试机（`alos-ecg-1@10.239.58.154`）上的辅助脚本，位于 `scri
 首次使用 USB Relay 前运行，添加 udev 规则使普通用户可访问：
 
 ```bash
-bash scripts/ecg-1/fix_usbrelay.sh
+./scripts/ecg-1/fix_usbrelay.sh
 ```
 
 ### switch_usb.sh — USB 电源切换
@@ -305,7 +305,7 @@ bash scripts/ecg-1/fix_usbrelay.sh
 通过 USB Relay 断电再上电，用于重启连接的 USB 设备（如 U 盘）：
 
 ```bash
-bash scripts/ecg-1/switch_usb.sh
+./scripts/ecg-1/switch_usb.sh
 ```
 
 ### flash_image.sh — 刷写 Android Image
@@ -314,10 +314,10 @@ bash scripts/ecg-1/switch_usb.sh
 
 ```bash
 # 使用默认 image 文件名 android-desktop_image.bin.gz
-bash scripts/ecg-1/flash_image.sh
+./scripts/ecg-1/flash_image.sh
 
 # 或指定 image 文件
-bash scripts/ecg-1/flash_image.sh /path/to/your_image.bin.gz
+./scripts/ecg-1/flash_image.sh /path/to/your_image.bin.gz
 ```
 
 > 脚本会自动识别 SanDisk U 盘，提示确认后开始写入，写入前自动卸载已挂载分区。
@@ -328,10 +328,10 @@ bash scripts/ecg-1/flash_image.sh /path/to/your_image.bin.gz
 
 ```bash
 # 进入交互模式
-bash scripts/ecg-1/run_cts.sh
+./scripts/ecg-1/run_cts.sh
 
 # 直接运行指定 plan
-bash scripts/ecg-1/run_cts.sh run cts -m CtsDisplayTestCases
+./scripts/ecg-1/run_cts.sh run cts -m CtsDisplayTestCases
 ```
 
 > 前提：CTS 工具包已解压到 `~/sjh/android-cts/`，参考 CTS 环境搭建步骤。
